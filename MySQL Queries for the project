@@ -1,0 +1,63 @@
+Gym Management System queries 
+
+
+1. VIEW ALL DATA
+SELECT * FROM Members;
+SELECT * FROM Trainers;
+SELECT * FROM Membership_Plans;
+SELECT * FROM Payments;
+SELECT * FROM Attendance;
+SELECT * FROM Workout_Plans;
+
+2. MEMBERS WITH THEIR MEMBERSHIP PLAN
+SELECT 
+    m.first_name,
+    m.last_name,
+    p.plan_name,
+    p.fees
+FROM Members m
+JOIN Membership_Plans p
+ON m.membership_id = p.membership_id;
+
+3. MEMBERS WITH THEIR TRAINERS
+SELECT 
+    m.first_name AS Member,
+    t.trainer_name AS Trainer
+FROM Member_Trainer mt
+JOIN Members m ON mt.member_id = m.member_id
+JOIN Trainers t ON mt.trainer_id = t.trainer_id;
+
+4. TOTAL REVENUE
+SELECT SUM(amount) AS Total_Revenue FROM Payments;
+
+5. PAYMENT DETAILS
+SELECT 
+    member_id,
+    amount,
+    payment_date,
+    payment_method
+FROM Payments;
+
+6. ATTENDANCE REPORT
+SELECT 
+    m.first_name,
+    a.attendance_date,
+    a.status
+FROM Attendance a
+JOIN Members m ON a.member_id = m.member_id;
+
+7. ACTIVE MEMBERS (RECENT JOIN)
+SELECT *
+FROM Members
+WHERE join_date >= '2026-05-01';
+
+8. TOTAL MEMBERS COUNT
+SELECT COUNT(*) AS Total_Members FROM Members;
+
+9. AVERAGE MEMBERSHIP FEES
+SELECT AVG(fees) AS Average_Fee FROM Membership_Plans;
+
+10. MOST POPULAR MEMBERSHIP PLAN
+SELECT membership_id, COUNT(*) AS total_users
+FROM Members
+GROUP BY membership_id;
