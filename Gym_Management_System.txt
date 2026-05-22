@@ -1,0 +1,187 @@
+Last login: Fri May 22 19:57:33 on ttys000
+rajankishorpise@Rajans-MacBook-Air ~ % mysql -u root -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 12
+Server version: 9.7.0 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2026, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> CREATE DATABASE GymManagementSystem;
+Query OK, 1 row affected (0.002 sec)
+
+mysql> 
+mysql> USE GymManagementSystem;
+Database changed
+mysql> CREATE TABLE Membership_Plans (
+    ->     membership_id INT PRIMARY KEY AUTO_INCREMENT,
+    ->     plan_name VARCHAR(50) NOT NULL,
+    ->     duration_months INT NOT NULL,
+    ->     fees DECIMAL(10,2) NOT NULL
+    -> );
+Query OK, 0 rows affected (0.012 sec)
+
+mysql> CREATE TABLE Members (
+    ->     member_id INT PRIMARY KEY AUTO_INCREMENT,
+    ->     first_name VARCHAR(50) NOT NULL,
+    ->     last_name VARCHAR(50),
+    ->     gender VARCHAR(10),
+    ->     age INT,
+    ->     phone VARCHAR(15),
+    ->     email VARCHAR(100) UNIQUE,
+    ->     address VARCHAR(255),
+    ->     join_date DATE,
+    ->     membership_id INT,
+    ->     
+    ->     FOREIGN KEY (membership_id)
+    ->     REFERENCES Membership_Plans(membership_id)
+    -> );
+Query OK, 0 rows affected (0.008 sec)
+
+mysql> CREATE TABLE Trainers (
+    ->     trainer_id INT PRIMARY KEY AUTO_INCREMENT,
+    ->     trainer_name VARCHAR(100) NOT NULL,
+    ->     specialization VARCHAR(100),
+    ->     phone VARCHAR(15),
+    ->     salary DECIMAL(10,2)
+    -> );
+Query OK, 0 rows affected (0.006 sec)
+
+mysql> CREATE TABLE Member_Trainer (
+    ->     member_id INT,
+    ->     trainer_id INT,
+    -> 
+    ->     PRIMARY KEY(member_id, trainer_id),
+    -> 
+    ->     FOREIGN KEY(member_id)
+    ->     REFERENCES Members(member_id),
+    -> 
+    ->     FOREIGN KEY(trainer_id)
+    ->     REFERENCES Trainers(trainer_id)
+    -> );
+Query OK, 0 rows affected (0.009 sec)
+
+mysql> CREATE TABLE Payments (
+    ->     payment_id INT PRIMARY KEY AUTO_INCREMENT,
+    ->     member_id INT,
+    ->     amount DECIMAL(10,2),
+    ->     payment_date DATE,
+    ->     payment_method VARCHAR(50),
+    -> 
+    ->     FOREIGN KEY(member_id)
+    ->     REFERENCES Members(member_id)
+    -> );
+Query OK, 0 rows affected (0.011 sec)
+
+mysql> CREATE TABLE Attendance (
+    ->     attendance_id INT PRIMARY KEY AUTO_INCREMENT,
+    ->     member_id INT,
+    ->     attendance_date DATE,
+    ->     status VARCHAR(20),
+    -> 
+    ->     FOREIGN KEY(member_id)
+    ->     REFERENCES Members(member_id)
+    -> );
+Query OK, 0 rows affected (0.009 sec)
+
+mysql> CREATE TABLE Workout_Plans (
+    ->     workout_id INT PRIMARY KEY AUTO_INCREMENT,
+    ->     member_id INT,
+    ->     workout_name VARCHAR(100),
+    ->     workout_day VARCHAR(20),
+    -> 
+    ->     FOREIGN KEY(member_id)
+    ->     REFERENCES Members(member_id)
+    -> );
+Query OK, 0 rows affected (0.011 sec)
+
+mysql> INSERT INTO Membership_Plans(plan_name, duration_months, fees)
+    -> VALUES
+    -> ('Monthly', 1, 1500),
+    -> ('Quarterly', 3, 4000),
+    -> ('Half-Yearly', 6, 7000),
+    -> ('Yearly', 12, 12000);
+Query OK, 4 rows affected (0.005 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Members
+    -> (first_name, last_name, gender, age, phone, email, address, join_date, membership_id)
+    -> VALUES
+    -> ('Rahul', 'Sharma', 'Male', 22, '9876543210', 'rahul@gmail.com', 'Pune', '2026-05-01', 1),
+    -> 
+    -> ('Priya', 'Patil', 'Female', 21, '9876501234', 'priya@gmail.com', 'Mumbai', '2026-05-02', 2),
+    -> 
+    -> ('Aman', 'Verma', 'Male', 24, '9988776655', 'aman@gmail.com', 'Nashik', '2026-05-04', 4),
+    -> 
+    -> ('Sneha', 'Joshi', 'Female', 23, '8877665544', 'sneha@gmail.com', 'Nagpur', '2026-05-06', 3);
+Query OK, 4 rows affected (0.006 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Trainers
+    -> (trainer_name, specialization, phone, salary)
+    -> VALUES
+    -> ('Amit Verma', 'Weight Training', '9999991111', 35000),
+    -> 
+    -> ('Rohit Kulkarni', 'Cardio', '9999992222', 30000),
+    -> 
+    -> ('Neha Joshi', 'Yoga', '9999993333', 28000);
+Query OK, 3 rows affected (0.002 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Member_Trainer(member_id, trainer_id)
+    -> VALUES
+    -> (1,1),
+    -> (2,3),
+    -> (3,1),
+    -> (4,2);
+Query OK, 4 rows affected (0.004 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Payments
+    -> (member_id, amount, payment_date, payment_method)
+    -> VALUES
+    -> (1,1500,'2026-05-01','UPI'),
+    -> 
+    -> (2,4000,'2026-05-02','Cash'),
+    -> 
+    -> (3,12000,'2026-05-04','Card'),
+    -> 
+    -> (4,7000,'2026-05-06','UPI');
+Query OK, 4 rows affected (0.003 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Attendance
+    -> (member_id, attendance_date, status)
+    -> VALUES
+    -> (1,'2026-05-20','Present'),
+    -> 
+    -> (2,'2026-05-20','Present'),
+    -> 
+    -> (3,'2026-05-20','Absent'),
+    -> 
+    -> (4,'2026-05-20','Present');
+Query OK, 4 rows affected (0.002 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Workout_Plans
+    -> (member_id, workout_name, workout_day)
+    -> VALUES
+    -> (1,'Chest Workout','Monday'),
+    -> 
+    -> (1,'Leg Workout','Wednesday'),
+    -> 
+    -> (2,'Yoga Session','Friday'),
+    -> 
+    -> (3,'Cardio Training','Tuesday'),
+    -> 
+    -> (4,'Back Workout','Thursday');
+Query OK, 5 rows affected (0.003 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> 
